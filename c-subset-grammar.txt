@@ -1,0 +1,162 @@
+Programa -> DecOuFunc DecOuFunc'
+DecOuFunc -> Declaracoes | Funcao
+DecOuFunc' -> DecOuFunc DecOuFunc' | ''
+
+
+Declaracoes -> # DEFINE IDENTIFICADOR Expressao |
+               DeclaracaoVars |
+               DeclaracaoProt
+
+
+Funcao -> Tipo VezesLoop IDENTIFICADOR Parametros { FuncaoLoop Comandos }
+VezesLoop -> * VezesLoop | ''
+FuncaoLoop -> DeclaracaoVars FuncaoLoop | ''
+
+
+DeclaracaoVars -> Tipo DeclaracaoVarsLoop ;
+DeclaracaoVarsLoop -> VezesLoop IDENTIFICADOR ColcheteExpressaoLoop DeclaracaoVarsAtribuicao DeclaracaoVarsLoop'
+ColcheteExpressaoLoop -> [ Expressao ] ColcheteExpressaoLoop | ''
+DeclaracaoVarsAtribuicao -> = ExpressaoAtribuicao | ''
+DeclaracaoVarsLoop' -> , DeclaracaoVarsLoop | ''
+
+
+DeclaracaoProt -> Tipo VezesLoop IDENTIFICADOR Parametros ;
+
+
+Parametros -> ( ParametrosOpLoop )
+ParametrosOpLoop -> ParametrosLoop | ''
+ParametrosLoop -> Tipo VezesLoop IDENTIFICADOR  ColcheteExpressaoLoop ParametrosLoop'
+ParametrosLoop' -> , ParametrosLoop | ''
+
+
+Tipo -> int | char | void
+
+
+Bloco -> { Comandos }
+
+
+Comandos -> ListaComandos Comandos'
+Comandos' -> ListaComandos Comandos' | ''
+
+
+ListaComandos -> DO Bloco WHILE ( Expressao ) ; |
+                 IF ( Expressao ) Bloco OpElse  |
+                 WHILE ( Expressao ) Bloco      |
+                 FOR ( OpExpressao ; OpExpressao ; OpExpressao ) Bloco |
+                 PRINTF ( STRING OpVirgulaExpressao ) ; |
+                 SCANF ( STRING , & IDENTIFICADOR ) ;   |
+                 EXIT ( Expressao ) ; |
+                 RETURN OpExpressao ; |
+                 Expressao ;          |
+                 ; |
+                 Bloco
+
+
+OpElse -> ELSE Bloco | ''
+OpExpressao -> Expressao | ''
+OpVirgulaExpressao -> , Expressao | ''
+
+
+Expressao -> ExpressaoAtribuicao Expressao'
+Expressao' -> , Expressao | ''
+
+
+ExpressaoAtribuicao -> ExpressaoCondicional | ExpressaoUnaria AtribuicaoOperador ExpressaoAtribuicao 
+AtribuicaoOperador -> = | += | -=
+
+
+ExpressaoCondicional -> ExpressaoOrLogico ExpressaoCondicional'
+ExpressaoCondicional' -> ? Expressao : ExpressaoCondicional | '' 
+
+
+
+
+ExpressaoOrLogico -> ExpressaoAndLogico ExpressaoOrLogico'
+ExpressaoOrLogico' -> || ExpressaoOrLogico | ''
+
+
+ExpressaoAndLogico -> ExpressaoOr ExpressaoAndLogico'
+ExpressaoAndLogico' -> && ExpressaoAndLogico | ''
+
+
+ExpressaoOr -> ExpressaoXor ExpressaoOr'
+ExpressaoOr' -> | ExpressaoOr | ''
+
+
+ExpressaoXor -> ExpressaoAnd ExpressaoXor'
+ExpressaoXor' -> ^ ExpressaoXor | ''
+
+
+ExpressaoAnd -> ExpressaoIgualdade ExpressaoAnd'
+ExpressaoAnd' -> & ExpressaoAnd | ''
+
+
+
+
+
+
+
+
+ExpressaoIgualdade -> ExpressaoRelacional ExpressaoIgualdade'
+ExpressaoIgualdade' -> IgualdadeOperador ExpressaoIgualdade | ''
+IgualdadeOperador -> == | !=
+
+
+ExpressaoRelacional -> ExpressaoShift ExpressaoRelacional'
+ExpressaoRelacional' -> RelacionalOperador ExpressaoRelacional | ''
+RelacionalOperador -> < | <= | > | >=
+
+
+ExpressaoShift -> ExpressaoAditiva ExpressaoShift'
+ExpressaoShift' -> ShiftOperador ExpressaoShift | ''
+ShiftOperador -> << | >>
+
+
+ExpressaoAditiva -> ExpressaoMultiplicativa ExpressaoAditiva'
+ExpressaoAditiva' -> AdicaoOperador ExpressaoAditiva | ''
+AdicaoOperador -> - | +
+
+
+ExpressaoMultiplicativa -> ExpressaoCast ExpressaoMultiplicativa'
+ExpressaoMultiplicativa' -> MultOperador ExpressaoMultiplicativa | ''
+MultOperador -> * | / | %
+
+
+
+
+
+
+
+
+ExpressaoCast -> ExpressaoUnaria | ( Tipo VezesLoop ) ExpressaoCast 
+
+
+ExpressaoUnaria -> ExpressaoPosFixa   |
+                   ++ ExpressaoUnaria |
+                   -- ExpressaoUnaria |
+                   UnarioOperador ExpressaoCast
+
+UnarioOperador -> & | * | + | - | ~ | !
+
+
+ExpressaoPosFixa -> ExpressaoPrimaria |
+                    ExpressaoPosFixa ExpressaoPosFixa'
+ExpressaoPosFixa' -> [ Expressao ] |
+                     ++            |
+                     --            |
+                     ( OpExpressaoAtribuicaoLoop )
+
+OpExpressaoAtribuicaoLoop -> ExpressaoAtribuicaoLoop | ''
+ExpressaoAtribuicaoLoop -> ExpressaoAtribuicao ExpressaoAtribuicaoLoop'
+ExpressaoAtribuicaoLoop' -> , ExpressaoAtribuicaoLoop | ''
+
+
+ExpressaoPrimaria -> IDENTIFICADOR |
+                     Numero |
+                     CARACTER |
+                     STRING |
+                     ( Expressao )
+
+
+Numero -> NUM_INTEGER | NUM_HEXA | NUM_OCTAL
+
